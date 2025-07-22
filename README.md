@@ -1,76 +1,92 @@
-# Gland-Segmentation
-## [GlaS@MICCAI'2015: Gland Segmentation Challenge Contest](https://warwick.ac.uk/fac/cross_fac/tia/data/glascontest/)
 
-<p align="center">
-<img src="fig/glas_img.png" width="800" height="250">
-</p>
+Gland Segmentation - GlaS@MICCAI 2015 Challenge
 
-In this challenge, participants are encouraged to run their gland segmentation algorithms on images of Hematoxylin and Eosin (H&E) stained slides, consisting of a variety of histologic grades. The dataset is provided together with ground truth annotations by expert pathologists. The participants are asked to develop and optimise their algorithms on the provided training dataset, and validate their algorithm on the test dataset.
+This project is a solution to the Gland Segmentation (GlaS) Challenge organized at MICCAI 2015. The objective is to develop robust segmentation models to detect glands in H&E stained histological images of colorectal cancer with varying histologic grades.
 
-## Structure
-### CSV Files
-`Grade.csv` is the original spreadsheet provided by the organiser. 
+Description
+-----------
+Participants are provided with training images and expert-annotated ground truth masks. The challenge involves:
+- Building and optimizing segmentation algorithms on the training dataset.
+- Validating the models on Test A and Test B datasets.
+- Evaluating results using metrics such as Dice Score, F1 Score, and Hausdorff Distance.
 
-`data.csv` is the post-processed spreadsheet with additional information for dataloading. 
+Project Structure
+-----------------
+Grade.csv                - Original spreadsheet from organizers
+data.csv                 - Processed CSV for loading data
+EDA.ipynb                - Exploratory data analysis
+dataloader.ipynb         - Data loading, preprocessing, and augmentation
+inference_testA.ipynb    - Inference results on Test A
+inference_testB.ipynb    - Inference results on Test B (primary reference)
+model.py                 - Experimental model architectures
+train.py                 - Training script with W&B logging
+metric.py                - Evaluation metric functions
+utils.py                 - Helper functions (visualization, preprocessing)
+requirements.txt         - Required packages
 
-### Notebooks
-`EDA.ipynb` provides description about data understanding, data analyses of the dataset. 
+Setup
+-----
+1. Clone the repository and navigate to the folder:
 
-`dataloader.ipynb` provides description about the data loading pipeline for training data set and testing data set. This includes data augmentation and data preprocessing inside the data loader pipeline. 
+   git clone <your-repo-url>
+   cd <your-project-folder>
 
-`inference_testB.ipynb` *attempts to provide an overview about the model used, hyperparameters, metrics result and visualisation of the inputs. This notebook computes the inference on data set testB. (Please view this notebook for primary reference on inferece). 
+2. Install required dependencies:
 
-`inference_testA.ipynb` This notebook computes the inference on testA.
+   pip install -r requirements.txt
+   pip install segmentation-models-pytorch
+   pip install --upgrade batchgenerators
 
-### Python Files
-These files contains helper functions or module for visualisation, model traning, evaluation and metrics. 
+Training
+--------
+To train the model and log results to Weights & Biases (W&B):
 
-`utils.py` contains utility functioons mainly for visualisation purpose and preprocessing functions. 
+   python train.py
 
-`metric.py` contains functions to calculate evaluation metrics, which includes, F1 score, Object Dice Score, Object Hausdorff Distance, Dice Score and Hausdorff Distance. This python file is adapted from repo by [Hans Pinckaers](https://github.com/DIAGNijmegen/neural-odes-segmentation) . 
+Modify train.py as needed to adjust hyperparameters, augmentations, or model choice.
 
-`train.py` is the main python file for model training. The training runs are all recorded in `Weights & Biases` cloud storage. 
+Inference
+---------
+Use the following notebooks for evaluation and visualization:
 
-`model.py` contains experimental models under testing phase.
+- inference_testA.ipynb: Runs inference on Test A dataset
+- inference_testB.ipynb: Runs inference on Test B (recommended reference)
 
-## Results 
-The metrics for segmentated mask evaluation is precision, recall, F1 score, dice score and Hausdorff Distance. The output results are evaluated on pixel-wise segmentation (binary mode) instead of gland-wise segmentation. 
+Each notebook includes:
+- Visualizations of predicted vs ground truth masks
+- Overlays and boundary comparisons for metrics like Hausdorff Distance
 
-|   | Precision  | Recall | F1 Score | Dice Score | Hausdorff Distance |
-| :-------------: | :-------------: | :-------------: | :-------------: | :-------------: | :-------------: |
-| testA  | 0.93 (0.06)  | 0.93 (0.06) | 0.93 (0.06) | 0.93 (0.07) | 83.35 (66.77) |
-| testB  | 0.90 (0.08)  | 0.90 (0.08) | 0.90 (0.08) | 0.91 (0.07) | 62.36 (33.02) |
+Results
+-------
+Metric             | Test A       | Test B       
+------------------ | ------------ | -------------
+Precision          | 0.93 (±0.06) | 0.90 (±0.08) 
+Recall             | 0.93 (±0.06) | 0.90 (±0.08) 
+F1 Score           | 0.93 (±0.06) | 0.90 (±0.08) 
+Dice Score         | 0.93 (±0.07) | 0.91 (±0.07) 
+Hausdorff Distance | 83.35 (±66.77) | 62.36 (±33.02)
 
-|Test A|Test B|
-|:--:|:--:|
-|![](fig/testA_boxplot.png)|![](fig/testB_boxplot.png)|
+Note: All evaluations are based on binary pixel-wise segmentation, not gland-wise object segmentation.
 
-## Visualisation 
-Binary Segmentation of ground truth and predicted masking. 
-<p align="center">
-<img src="fig/binary_segmentation.png" width="800" height="250">
-</p>
-Overlay segmentation plot of ground truth and predicted masking. 
-<p align="center">
-<img src="fig/overlay_segmentation.png" width="800" height="250">
-</p>
-Overlay boundary plot of ground truth and predicted masking for Hausdorff Distance.  
-<p align="center">
-<img src="fig/hausdorff.png" width="600" height="600">
-</p>
+Visualizations
+--------------
+- Binary segmentation maps of predictions vs ground truth
+- Overlay segmentation plots
+- Hausdorff Distance boundary comparisons
 
-## Future Work
-Gland-wise segmentation of ground truth and predicted masking is possible. The evaluation metric for object dice score, object F1 score and object Hausdorff Distance reserved for future investigation. 
+Future Work
+-----------
+- Implement gland-wise segmentation
+- Extend evaluation to:
+  - Object-level Dice Score
+  - Object-level F1 Score
+  - Object-level Hausdorff Distance
 
-<p align="center">
-<img src="fig/gland_wise.png" width="800" height="250">
-</p>
+Acknowledgements
+----------------
+- Dataset and challenge from MICCAI GlaS Challenge 2015
+- Evaluation metrics inspired by the work of Hans Pinckaers
 
-## Requirements 
-### Third Party Library
-- Segmentaion models API in PyTorch by [Pavel Yakubovskiy](https://github.com/qubvel/segmentation_models.pytorch): `$ pip install segmentation-models-pytorch`
-- Data loader module for medical images by [MIC-DKFZ](https://github.com/MIC-DKFZ/batchgenerators): `$ pip install --upgrade batchgenerators`
-
-### Dependencies 
-`$ pip install requirements.txt`
-
+License
+-------
+For research and academic use only. Contact the author for other usage rights.
